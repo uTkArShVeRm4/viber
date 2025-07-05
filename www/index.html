@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Music Visualizer</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Music Visualizer</h1>
+            <canvas id="canvas" width="800" height="600"></canvas>
+            <div class="controls">
+                <input
+                    type="file"
+                    id="audio-file"
+                    accept=".wav"
+                    style="display: none"
+                />
+                <div class="bin-size-control">
+                    <label for="bin-size-select">Frequency Bins:</label>
+                    <select id="bin-size-select">
+                        <option value="16">16 Bins</option>
+                        <option value="32">32 Bins</option>
+                        <option value="64" selected>64 Bins</option>
+                    </select>
+                </div>
+                <button id="upload-btn">Upload WAV File</button>
+                <button id="play-pause-btn" disabled>Play</button>
+                <div class="volume-control">
+                    <label for="volume-slider">Volume: <span id="volume-value">50</span>%</label>
+                    <input type="range" id="volume-slider" min="0" max="100" step="5" value="50">
+                </div>
+                <div class="smoothing-control">
+                    <label for="smoothing-slider">Smoothing: <span id="smoothing-value">0.3</span></label>
+                    <input type="range" id="smoothing-slider" min="0.0" max="1.0" step="0.1" value="0.3">
+                </div>
+            </div>
+        </div>
+        <script type="module" src="index.js"></script>
+    </body>
+</html>

@@ -1,0 +1,42 @@
+[package]
+name = "viber"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4.50"
+js-sys = "0.3"
+wgpu = { version = "25.0.2", features = ["webgl", "webgpu"] }
+winit = "0.30.11"
+pollster = "0.4.0"
+bytemuck = { version = "1.14", features = ["derive"] }
+anyhow = "1.0"
+console_error_panic_hook = "0.1.7"
+hound = "3.5.1"
+phastft = "0.2.1"
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+  "Document",
+  "Element",
+  "HtmlCanvasElement",
+  "Window",
+  "WebGl2RenderingContext",
+  "CanvasRenderingContext2d",
+  "ImageData",
+  "HtmlElement",
+  "MouseEvent",
+  "KeyboardEvent",
+  "Event",
+  "EventTarget",
+  "Performance",
+  "File",
+  "FileReader",
+  "Blob",
+]
