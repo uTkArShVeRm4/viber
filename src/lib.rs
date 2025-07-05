@@ -458,28 +458,39 @@ impl App {
     }
     
     fn apply_dynamic_scaling(&self, raw_magnitudes: &[f32], output_bars: &mut [f32], num_bars: usize) {
-        // Find the range of values in this frame
-        let max_mag = raw_magnitudes.iter().fold(0.0f32, |a, &b| a.max(b));
-        let min_mag = raw_magnitudes.iter().fold(f32::INFINITY, |a, &b| a.min(b.max(0.001)));
+        // Use percentile-based normalization for better variance
+        let mut sorted_mags = raw_magnitudes.to_vec();
+        sorted_mags.sort_by(|a, b| a.partial_cmp(b).unwrap());
         
-        if max_mag <= min_mag {
-            return; // Avoid division by zero
-        }
+        // Find percentile thresholds
+        let p25_idx = (num_bars as f32 * 0.25) as usize;
+        let p75_idx = (num_bars as f32 * 0.75) as usize;
+        let p90_idx = (num_bars as f32 * 0.90) as usize;
+        
+        let p25_val = sorted_mags.get(p25_idx).unwrap_or(&0.0);
+        let p75_val = sorted_mags.get(p75_idx).unwrap_or(&0.0);
+        let p90_val = sorted_mags.get(p90_idx).unwrap_or(&0.0);
+        let max_val = sorted_mags.last().unwrap_or(&0.0);
         
         for i in 0..num_bars {
-            let normalized = (raw_magnitudes[i] - min_mag) / (max_mag - min_mag);
+            let mag = raw_magnitudes[i];
             
-            // Apply different scaling based on frequency range for better variance
-            let scaled = if i < num_bars / 4 {
-                // Bass range: Compress then expand with power 1.8
-                let compressed = normalized.sqrt();
-                compressed.powf(1.8)
-            } else if i < 3 * num_bars / 4 {
-                // Mid range: Enhance with power 2.2 for more dramatic differences
-                normalized.powf(2.2)
+            // Map to percentile-based ranges with dramatic scaling
+            let scaled = if mag <= *p25_val {
+                // Bottom 25%: Map to 0-0.2 range
+                (mag / p25_val.max(0.001)) * 0.2
+            } else if mag <= *p75_val {
+                // 25%-75%: Map to 0.2-0.6 range with power scaling
+                let normalized = (mag - p25_val) / (p75_val - p25_val).max(0.001);
+                0.2 + normalized.powf(1.5) * 0.4
+            } else if mag <= *p90_val {
+                // 75%-90%: Map to 0.6-0.85 range with strong power scaling
+                let normalized = (mag - p75_val) / (p90_val - p75_val).max(0.001);
+                0.6 + normalized.powf(2.0) * 0.25
             } else {
-                // Treble range: Moderate enhancement with power 1.5
-                normalized.powf(1.5)
+                // Top 10%: Map to 0.85-1.0 range with extreme scaling
+                let normalized = (mag - p90_val) / (max_val - p90_val).max(0.001);
+                0.85 + normalized.powf(3.0) * 0.15
             };
             
             output_bars[i] = scaled.min(1.0);

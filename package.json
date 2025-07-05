@@ -1,0 +1,31 @@
+{
+  "name": "wasm-audio-visualizer",
+  "version": "1.0.0",
+  "description": "Real-time audio visualizer built with Rust, WASM, and WebGPU",
+  "main": "www/index.js",
+  "scripts": {
+    "build": "./build.sh",
+    "dev": "just serve",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "audio",
+    "visualizer",
+    "wasm",
+    "rust",
+    "webgpu",
+    "fft"
+  ],
+  "author": "Utkarsh Verma",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/utkarshverm4/viber.git"
+  },
+  "homepage": "."
+}

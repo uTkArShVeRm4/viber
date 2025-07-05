@@ -1,0 +1,39 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing Rust and wasm-pack"
+        - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+        - source $HOME/.cargo/env
+        - echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> $HOME/.bashrc
+        - export PATH="$HOME/.cargo/bin:$PATH"
+        - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        - rustup target add wasm32-unknown-unknown
+        - rustc --version
+        - wasm-pack --version
+    build:
+      commands:
+        - echo "Building WASM package"
+        - source $HOME/.cargo/env
+        - export PATH="$HOME/.cargo/bin:$PATH"
+        - wasm-pack build --target web --out-dir pkg --release
+        - echo "Build completed successfully"
+        - ls -la pkg/
+    postBuild:
+      commands:
+        - echo "Preparing deployment files"
+        - mkdir -p deploy
+        - cp www/* deploy/
+        - cp -r pkg deploy/
+        - ls -la deploy/
+        - echo "Files prepared for deployment"
+  artifacts:
+    baseDirectory: deploy
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - $HOME/.cargo/**/*
+      - target/**/*
+      - $HOME/.rustup/**/*
