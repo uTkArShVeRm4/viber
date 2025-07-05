@@ -10,6 +10,7 @@ frontend:
         - export PATH="$HOME/.cargo/bin:$PATH"
         - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
         - rustup target add wasm32-unknown-unknown
+        - rustup default nightly
         - rustc --version
         - wasm-pack --version
     build:
@@ -31,7 +32,7 @@ frontend:
   artifacts:
     baseDirectory: deploy
     files:
-      - '**/*'
+      - "**/*"
   cache:
     paths:
       - $HOME/.cargo/**/*
