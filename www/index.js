@@ -1,12 +1,22 @@
 import init, { App } from "../pkg/viber.js";
 
 async function run() {
+  // Ensure DOM is ready
+  if (document.readyState === 'loading') {
+    await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve));
+  }
+
   await init();
+
+  const canvas = document.getElementById("canvas");
+  
+  if (!canvas) {
+    console.error("Canvas element not found");
+    return;
+  }
 
   const app = new App();
   await app.init("canvas");
-
-  const canvas = document.getElementById("canvas");
 
   let startTime = 0;
   let lastTime = 0;
@@ -49,24 +59,75 @@ async function run() {
 
   // Handle canvas resize
   function resizeCanvas() {
-    const rect = canvas.getBoundingClientRect();
-    const width = rect.width * window.devicePixelRatio;
-    const height = rect.height * window.devicePixelRatio;
-
-    canvas.width = width;
-    canvas.height = height;
-    app.resize(width, height);
+    if (!canvas) {
+      console.error("Canvas element not available for resize");
+      return;
+    }
+    
+    const container = document.querySelector('.container');
+    if (!container) {
+      console.error("Container element not found");
+      return;
+    }
+    
+    const containerWidth = container.clientWidth;
+    const maxWidth = Math.min(containerWidth * 0.95, 800);
+    const height = maxWidth * 0.75; // 4:3 aspect ratio
+    
+    // Set CSS size
+    canvas.style.width = maxWidth + 'px';
+    canvas.style.height = height + 'px';
+    
+    // Set actual canvas resolution
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = maxWidth * pixelRatio;
+    canvas.height = height * pixelRatio;
+    
+    // Notify WASM app of resize
+    if (app && typeof app.resize === 'function') {
+      try {
+        app.resize(canvas.width, canvas.height);
+      } catch (e) {
+        console.error("Error resizing app:", e);
+      }
+    }
   }
 
   window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
+  window.addEventListener("orientationchange", () => {
+    setTimeout(resizeCanvas, 100);
+  });
+  
+  // Handle touch events for better mobile interaction
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+  });
+  
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+  });
+  
+  canvas.addEventListener("touchend", (e) => {
+    e.preventDefault();
+  });
+  
+  // Initial canvas resize with delay to ensure DOM is ready
+  setTimeout(() => {
+    resizeCanvas();
+  }, 0);
 
   // File upload handling (placeholder for now)
   const uploadBtn = document.getElementById("upload-btn");
   const audioFile = document.getElementById("audio-file");
 
-  uploadBtn.addEventListener("click", () => {
+  function triggerFileUpload() {
     audioFile.click();
+  }
+  
+  uploadBtn.addEventListener("click", triggerFileUpload);
+  uploadBtn.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    triggerFileUpload();
   });
 
   audioFile.addEventListener("change", (e) => {
@@ -181,7 +242,8 @@ async function run() {
 
   // Play/Pause button handling
   const playPauseBtn = document.getElementById("play-pause-btn");
-  playPauseBtn.addEventListener("click", () => {
+  
+  function togglePlayPause() {
     if (!audioElement || !audioProcessed) return;
     
     if (isPlaying) {
@@ -195,6 +257,12 @@ async function run() {
       isPlaying = true;
       playPauseBtn.textContent = "Pause";
     }
+  }
+  
+  playPauseBtn.addEventListener("click", togglePlayPause);
+  playPauseBtn.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    togglePlayPause();
   });
 }
 
