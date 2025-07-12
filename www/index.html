@@ -2,41 +2,98 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-        <title>Music Visualizer</title>
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+        />
+        <title>Music Visualizer - Utkarsh Verma</title>
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-        <div class="container">
-            <h1>Music Visualizer</h1>
-            <canvas id="canvas"></canvas>
-            <div class="controls">
-                <input
-                    type="file"
-                    id="audio-file"
-                    accept=".wav"
-                    style="display: none"
-                />
-                <div class="bin-size-control">
-                    <label for="bin-size-select">Frequency Bins:</label>
-                    <select id="bin-size-select">
-                        <option value="16">16 Bins</option>
-                        <option value="32">32 Bins</option>
-                        <option value="64" selected>64 Bins</option>
-                    </select>
+        <div class="background-grid"></div>
+
+        <div class="portfolio-container">
+            <!-- Navigation -->
+            <nav class="portfolio-nav visible">
+                <a href="https://utkarsh-verma.com" class="nav-home">
+                    Utkarsh Verma
+                </a>
+                <div class="nav-links">
+                    <a href="https://utkarsh-verma.com#about">About</a>
+                    <a href="https://utkarsh-verma.com#projects">Projects</a>
+                    <a href="https://utkarsh-verma.com#blog">Blog</a>
+                    <a href="https://utkarsh-verma.com#contact">Contact</a>
                 </div>
-                <button id="upload-btn">Upload WAV File</button>
-                <button id="play-pause-btn" disabled>Play</button>
-                <div class="volume-control">
-                    <label for="volume-slider">Volume: <span id="volume-value">50</span>%</label>
-                    <input type="range" id="volume-slider" min="0" max="100" step="5" value="50">
+            </nav>
+
+            <main class="main-content">
+                <div class="container">
+                    <h1>Music Visualizer</h1>
+                    <canvas id="canvas"></canvas>
+
+                    <div class="controls">
+                        <div class="control-group bin-size-control">
+                            <label for="bin-size-select">Frequency Bins:</label>
+                            <select id="bin-size-select">
+                                <option value="16">16 Bins</option>
+                                <option value="32">32 Bins</option>
+                                <option value="64" selected>64 Bins</option>
+                            </select>
+                        </div>
+
+                        <div class="button-group">
+                            <input
+                                type="file"
+                                id="audio-file"
+                                accept=".wav"
+                                style="display: none"
+                            />
+                            <button id="upload-btn">
+                                <span>Upload WAV File</span>
+                            </button>
+                            <button id="play-pause-btn" disabled>
+                                <span>Play</span>
+                            </button>
+                        </div>
+
+                        <div class="control-group volume-control">
+                            <label for="volume-slider"
+                                >Volume:
+                                <span id="volume-value" class="value-display"
+                                    >30</span
+                                >%</label
+                            >
+                            <input
+                                type="range"
+                                id="volume-slider"
+                                min="0"
+                                max="100"
+                                step="5"
+                                value="30"
+                            />
+                        </div>
+
+                        <div class="control-group smoothing-control">
+                            <label for="smoothing-slider"
+                                >Smoothing:
+                                <span id="smoothing-value" class="value-display"
+                                    >0.2</span
+                                ></label
+                            >
+                            <input
+                                type="range"
+                                id="smoothing-slider"
+                                min="0.0"
+                                max="1.0"
+                                step="0.1"
+                                value="0.2"
+                            />
+                        </div>
+                    </div>
                 </div>
-                <div class="smoothing-control">
-                    <label for="smoothing-slider">Smoothing: <span id="smoothing-value">0.3</span></label>
-                    <input type="range" id="smoothing-slider" min="0.0" max="1.0" step="0.1" value="0.3">
-                </div>
-            </div>
+            </main>
         </div>
+
         <script type="module" src="index.js"></script>
     </body>
 </html>

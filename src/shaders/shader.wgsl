@@ -52,7 +52,7 @@ fn fs_main(@builtin(position) fragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     );
     let aspect = uniforms.resolution.x / uniforms.resolution.y;
 
-    var final_color = vec3<f32>(0.05, 0.05, 0.1); // Dark blue background
+    var final_color = vec3<f32>(0.0, 0.0, 0.0); // Transparent background to show page background
     let time = uniforms.time;
 
     // Draw frequency bars as lines with circles and bloom
@@ -87,9 +87,9 @@ fn fs_main(@builtin(position) fragCoord: vec4<f32>) -> @location(0) vec4<f32> {
 
         // Dynamic color based on frequency and amplitude
         let freq_ratio = f32(bar_index) / uniforms.bin_size;
-        let hue = freq_ratio * 0.8 + time * 0.1; // Slowly rotating hue
-        let saturation = 0.8 + amplitude * 0.2;
-        let brightness = 0.5 + amplitude * 0.5;
+        let hue = freq_ratio * 0.8 + time * 0.05; // Slowly rotating hue
+        let saturation = 0.9 + amplitude * 0.1;
+        let brightness = 0.6 + amplitude * 0.4;
         let base_color = hsv2rgb(vec3<f32>(hue, saturation, brightness));
 
         // Line distance and rendering
@@ -134,10 +134,10 @@ fn fs_main(@builtin(position) fragCoord: vec4<f32>) -> @location(0) vec4<f32> {
     }
     total_energy /= uniforms.bin_size;
 
-    // Subtle background glow
+    // Subtle background glow with adaptive colors
     let center_dist = length(uv);
-    let bg_glow = total_energy * exp(-center_dist * 3.0) * 0.03;
-    final_color += vec3<f32>(0.1, 0.05, 0.15) * bg_glow;
+    let bg_glow = total_energy * exp(-center_dist * 2.0) * 0.02;
+    final_color += vec3<f32>(0.2, 0.1, 0.3) * bg_glow;
 
     // Apply tone mapping and gamma correction
     // final_color = final_color / (final_color + vec3<f32>(1.0));
