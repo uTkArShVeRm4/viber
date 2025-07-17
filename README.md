@@ -1,3 +1,3 @@
 DEMO here 👉 https://music.utkarsh-verma.com
 
-![assets/demo.mov](assets/demo.mov)
+![assets/demo.webm](assets/demo.webm)
