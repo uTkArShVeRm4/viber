@@ -1,3 +1,3 @@
 DEMO here 👉 https://music.utkarsh-verma.com
 
-![video](https://github.com/utkarshverm4/viber/assets/demo.webm)
+![video](https://github.com/uTkArShVeRm4/viber/blob/master/assets/demo.webm)
